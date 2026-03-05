@@ -1,12 +1,16 @@
 import { execSync } from 'child_process'
 
 function linuxOutput (pid: number): string {
-  return execSync(`pgrep -P ${pid}`).toString().trim()
+  try {
+    return execSync(`pgrep -P ${pid}`).toString().trim()
+  } catch (error) {
+    return ''
+  }
 }
 
 function windowsOutput (pid: number): string {
   try {
-    return execSync(`wmic process where (ParentProcessId=${pid}) get ProcessId`, { stdio: 'ignore' })
+    return execSync(`wmic process where (ParentProcessId=${pid}) get ProcessId`)
     .toString()
     .replace('ProcessId', '') // Remove the header row
     .trim()

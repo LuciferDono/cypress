@@ -846,20 +846,15 @@ describe('lib/exec/spawn', function () {
 
     describe('process.stdin error handling', () => {
       beforeEach(() => {
-        console.log('mocking process')
         const stdinEmitter = new EventEmitter()
 
         vi.mocked(stdin.on).mockImplementation((event, callback) => {
-          console.log('spied on')
-
           stdinEmitter.on(event, callback)
 
           return stdin
         })
 
         vi.mocked(stdin.emit).mockImplementation((event, ...args) => {
-          console.log('spied emit')
-
           stdinEmitter.emit(event, ...args)
 
           return stdin
@@ -881,7 +876,7 @@ describe('lib/exec/spawn', function () {
 
           // If the error is caught, p resolves; if not, p rejects and the assertion fails
 
-          await expect(p).resolves
+          await expect(p).resolves.toBeDefined()
         })
       })
 
@@ -899,7 +894,6 @@ describe('lib/exec/spawn', function () {
           code: 'FAILWHALE',
         }
 
-        console.log('emitting error', stdin.emit)
         stdin.emit('error', err)
         await expect(p).rejects.toThrow('wattttt')
       })
